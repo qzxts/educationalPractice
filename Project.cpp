@@ -3,6 +3,9 @@
 #include <string> 
 using namespace std;
 
+
+bool isFileOpen{ false }, isFileEmpty{ true };
+
 int main() {
     string textFileName;
     unsigned short operationSelection;
