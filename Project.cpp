@@ -6,6 +6,41 @@ using namespace std;
 
 bool isFileOpen{ false }, isFileEmpty{ true };
 
+
+void encrypt(string textFileName, unsigned short shiftValue) {
+    string initialText, encryptedText;
+    ifstream inTextFile(textFileName);
+    getline(inTextFile, initialText);
+    encryptedText = initialText;
+    if (inTextFile.is_open()) {
+        isFileOpen = true;
+        if ((inTextFile.peek() == std::ifstream::traits_type::eof()) == false || initialText.length() > 1) {
+            isFileEmpty = false;
+            for (unsigned long i = 0; i < encryptedText.length(); ++i) {
+                if (isalpha(encryptedText[i])) {
+                    encryptedText[i] = toupper(encryptedText[i]);
+                    if ((shiftValue + (static_cast<int>(encryptedText[i]) - 64) > 25) && (shiftValue + (static_cast<int>(encryptedText[i]) - 64) != 26)) {
+                        encryptedText[i] = (static_cast<int>(encryptedText[i]) - 26) + shiftValue;
+                    }
+                    else {
+                        encryptedText[i] = static_cast<int>(encryptedText[i]) + shiftValue;
+                    }
+                }
+                if (static_cast<int>(initialText[i]) >= 97 && static_cast<int>(initialText[i]) <= 122) {
+                    encryptedText[i] = tolower(encryptedText[i]);
+                }
+            }
+            inTextFile.close();
+            ofstream outTextFile(textFileName);
+            if (outTextFile.is_open()) {
+                outTextFile << encryptedText;
+                outTextFile.close();
+            }
+        }
+    }
+}
+
+
 void decrypt(string textFileName) {
     float freqCountInText[26];
     string initialText, decryptedText, alphabet{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
